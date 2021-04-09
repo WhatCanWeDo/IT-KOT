@@ -9,7 +9,7 @@ router = APIRouter()
 
 async def send_request_to_kitchen(request, cafe_id):
     async with httpx.AsyncClient() as client:
-        response = await client.post('address/' + cafe_id, data=request)
+        response = await client.post('address/' + cafe_id + '/order', data=request)
     json = response.json()
     if not json['success']:
         logging.warning(f'Error with sending request to the kitchen \n Kitchen\'s response : {json}')
@@ -23,6 +23,7 @@ async def send_speech_order(request: Request):
 
     json = await speech2order(speech_url=request['speech_url'])
     await send_request_to_kitchen(json, cafe_id=request['cafe_id'])
+    return JSONResponse(status_code=200, content={'success': True})
 
 
 @router.post('/send-order')
@@ -32,3 +33,4 @@ async def send_text(request: Request):
         return JSONResponse(status_code=400, content={'success': False, 'error_message': 'Expected json file'})
 
     await send_request_to_kitchen(request['data'], cafe_id=request['cafe_id'])
+    return JSONResponse(status_code=200, content={'success': True})
