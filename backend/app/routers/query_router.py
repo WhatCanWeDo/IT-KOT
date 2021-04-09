@@ -2,14 +2,14 @@ from fastapi import APIRouter, Request
 import httpx
 from fastapi.responses import JSONResponse
 import logging
-from super_dan import convert_speech_to_text
+from ..speech2order import speech2order
 
 router = APIRouter()
 
 
-async def send_request_to_kitchen(request):
+async def send_request_to_kitchen(request, cafe_id):
     async with httpx.AsyncClient() as client:
-        response = await client.post('address', data=request)
+        response = await client.post('address/' + cafe_id, data=request)
     json = response.json()
     if not json['success']:
         logging.warning(f'Error with sending request to the kitchen \n Kitchen\'s response : {json}')
@@ -21,8 +21,8 @@ async def send_speech_order(request: Request):
         logging.warning('Missing speech_url')
         return JSONResponse(status_code=400, content={'success': False, 'error_message': 'Expected speech url'})
 
-    json = convert_speech_to_text(request['speech_url'])
-    await send_request_to_kitchen(json)
+    json = await speech2order(speech_url=request['speech_url'])
+    await send_request_to_kitchen(json, cafe_id=request['cafe_id'])
 
 
 @router.post('/send-order')
@@ -31,5 +31,4 @@ async def send_text(request: Request):
         logging.warning('Missing json file')
         return JSONResponse(status_code=400, content={'success': False, 'error_message': 'Expected json file'})
 
-    await send_request_to_kitchen(request['data'])
-
+    await send_request_to_kitchen(request['data'], cafe_id=request['cafe_id'])
