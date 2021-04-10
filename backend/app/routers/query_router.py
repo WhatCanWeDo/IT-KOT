@@ -20,3 +20,14 @@ async def make_order(r: Request):
         p += prices[i]
     print('Цена заказа', p, 'рублей')
     return JSONResponse(status_code=200, content={})
+
+
+@router.post('/get-description')
+async def make_order(r: Request):
+    pprint(await r.json())
+    request = await r.json()
+    item_id = request['itemId']
+    descrs = {
+        i: 'Наше лучшее блюдо!' for i in range(10)
+    }
+    return JSONResponse(status_code=200, content={'description': descrs[item_id]})
