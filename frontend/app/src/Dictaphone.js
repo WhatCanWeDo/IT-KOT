@@ -9,6 +9,10 @@ const options = {
     continuous: true
 };
 class Dictaphone extends React.Component {
+    constructor(...args) {
+        super(...args);
+        this.state = {muted: true}
+    }
     render() {
         const {
             listening,
@@ -30,6 +34,7 @@ class Dictaphone extends React.Component {
         const handleStopListen = event => {
             this.props.stopListening();
             this.setState({muted: true})
+            alert(transcript)
         }
 
         const resetListen = () => {
@@ -74,4 +79,4 @@ class Dictaphone extends React.Component {
     }
 }
 
-//export default SpeechRecognition(options)(Dictaphone)
+export default SpeechRecognition(options)(Dictaphone)

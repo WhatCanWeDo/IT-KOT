@@ -19,82 +19,117 @@ import {
 import Dictaphone from "./Dictaphone";
 import {Md3DRotation} from "react-icons/all";
 
+
+function createItemCard(imageSrc, title, msgText, itemName) {
+    return (
+        <Card>
+            <Card.Img variant="top" src={imageSrc}
+                      width="100" height="100" alt={itemName}/>
+            <Card.Title> {title} </Card.Title>
+            <Button onClick={() => pushNewMessage(msgText, true)}>
+                Добавить в заказ
+            </Button>
+            <Button onClick={() => getMoreInfo(itemName)}> Подробнее </Button>
+        </Card>
+    )
+}
+
 class ItemList extends React.Component {
     render() {
         return (
             <div className="item-list">
                 <h1>Меню</h1>
-                <CardDeck style={{height: '21.75vh'}}>
+                <CardDeck style={{height: '20vh'}}>
                     <Container>Салаты</Container>
-                    <Card as="a" onClick={() => pushNewMessage('ЙОУ Я КУПИЛ ЦЕЗАРЬ ДА!', true)}>
-                        <Card.Img variant="top" src="https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg"
-                        width="100" height="100" alt="HUEWFFHUHUEhu"/>
-                        <Card.Title>Салат цезарь </Card.Title>
-                    </Card>
-                    <Card>
-                        <Card.Img variant="top" src="https://www.gastronom.ru/binfiles/images/20191113/b50e9f2a.jpg"
-                                  width="100" height="100" alt="HUEWFFHUHUEhu"/>
-                        <Card.Title>Салат греческий </Card.Title>
-                    </Card>
-                    <Card>
-                        <Card.Img variant="top" src="https://www.gastronom.ru/binfiles/images/20191113/b50e9f2a.jpg"
-                                  width="100" height="100" alt="HUEWFFHUHUEhu"/>
-                        <Card.Title>Салат из морепродуктов </Card.Title>
-                    </Card>
+                    {createItemCard(
+                        "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
+                        "Салат Цезарь",
+                        "Салат Цезарь добавлен в заказ",
+                        "Cesar"
+                    )}
+                    {createItemCard(
+                        "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
+                        "Салат Цезарь",
+                        "Салат Цезарь добавлен в заказ",
+                        "Cesar"
+                    )}
+                    {createItemCard(
+                        "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
+                        "Салат Цезарь",
+                        "Салат Цезарь добавлен в заказ",
+                        "Cesar"
+                    )}
                 </CardDeck>
-                <CardDeck style={{height: '21.75vh'}}>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+
+                <CardDeck style={{height: '20vh'}}>
                     <Container>Хинкал</Container>
-                    <Card as="a" onClick=''>
-                        <Card.Img variant="top" src="https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg"
-                                  width="100" height="100" alt="HUEWFFHUHUEhu"/>
-                        <Card.Title>Хинкал с бараниной </Card.Title>
-                    </Card>
-                    <Card>
-                        <Card.Img variant="top" src="https://www.gastronom.ru/binfiles/images/20191113/b50e9f2a.jpg"
-                                  width="100" height="100" alt="HUEWFFHUHUEhu"/>
-                        <Card.Title>Хинкал с говядиной </Card.Title>
-                    </Card>
-                    <Card>
-                        <Card.Img variant="top" src="https://www.gastronom.ru/binfiles/images/20191113/b50e9f2a.jpg"
-                                  width="100" height="100" alt="HUEWFFHUHUEhu"/>
-                        <Card.Title>Хинкал с индейкой </Card.Title>
-                    </Card>
+                    {createItemCard(
+                        "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
+                        "Салат Цезарь",
+                        "Салат Цезарь добавлен в заказ",
+                        "Cesar"
+                    )}
+                    {createItemCard(
+                        "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
+                        "Салат Цезарь",
+                        "Салат Цезарь добавлен в заказ",
+                        "Cesar"
+                    )}
+                    {createItemCard(
+                        "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
+                        "Салат Цезарь",
+                        "Салат Цезарь добавлен в заказ",
+                        "Cesar"
+                    )}
                 </CardDeck>
-                <CardDeck style={{height: '21.75vh'}}>
+                <br/>
+                <CardDeck style={{height: '20vh'}}>
                     <Container>Алкоголь</Container>
-                    <Card as="a" onClick=''>
-                        <Card.Img variant="top" src="https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg"
-                                  width="100" height="100" alt="HUEWFFHUHUEhu"/>
-                        <Card.Title> Вино красное Испания </Card.Title>
-                    </Card>
-                    <Card>
-                        <Card.Img variant="top" src="https://www.gastronom.ru/binfiles/images/20191113/b50e9f2a.jpg"
-                                  width="100" height="100" alt="HUEWFFHUHUEhu"/>
-                        <Card.Title> Вино красное Италия </Card.Title>
-                    </Card>
-                    <Card>
-                        <Card.Img variant="top" src="https://www.gastronom.ru/binfiles/images/20191113/b50e9f2a.jpg"
-                                  width="100" height="100" alt="HUEWFFHUHUEhu"/>
-                        <Card.Title> Вино белое Франция </Card.Title>
-                    </Card>
+                    {createItemCard(
+                        "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
+                        "Салат Цезарь",
+                        "Салат Цезарь добавлен в заказ",
+                        "Cesar"
+                    )}
+                    {createItemCard(
+                        "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
+                        "Салат Цезарь",
+                        "Салат Цезарь добавлен в заказ",
+                        "Cesar"
+                    )}
+                    {createItemCard(
+                        "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
+                        "Салат Цезарь",
+                        "Салат Цезарь добавлен в заказ",
+                        "Cesar"
+                    )}
                 </CardDeck>
-                <CardDeck style={{height: '21.75vh'}}>
+                <br/>
+                <CardDeck style={{height: '20vh'}}>
                     <Container>Напитки</Container>
-                    <Card as="a" onClick=''>
-                        <Card.Img variant="top" src="https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg"
-                                  width="100" height="100" alt="HUEWFFHUHUEhu"/>
-                        <Card.Title> Гранатовый сок </Card.Title>
-                    </Card>
-                    <Card>
-                        <Card.Img variant="top" src="https://www.gastronom.ru/binfiles/images/20191113/b50e9f2a.jpg"
-                                  width="100" height="100" alt="HUEWFFHUHUEhu"/>
-                        <Card.Title> Минеральная вода </Card.Title>
-                    </Card>
-                    <Card>
-                        <Card.Img variant="top" src="https://www.gastronom.ru/binfiles/images/20191113/b50e9f2a.jpg"
-                                  width="100" height="100" alt="HUEWFFHUHUEhu"/>
-                        <Card.Title> Лимонад "Буратино" </Card.Title>
-                    </Card>
+                    {createItemCard(
+                        "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
+                        "Салат Цезарь",
+                        "Салат Цезарь добавлен в заказ",
+                        "Cesar"
+                    )}
+                    {createItemCard(
+                        "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
+                        "Салат Цезарь",
+                        "Салат Цезарь добавлен в заказ",
+                        "Cesar"
+                    )}
+                    {createItemCard(
+                        "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
+                        "Салат Цезарь",
+                        "Салат Цезарь добавлен в заказ",
+                        "Cesar"
+                    )}
                 </CardDeck>
             </div>
         );
@@ -122,6 +157,10 @@ function pushNewMessage(msgText, fromUser) {
     this.setState({messages})
 }
 
+function getMoreInfo(itemName) {
+
+}
+
 class App extends React.Component{
     constructor(...args) {
         super(...args);
@@ -133,8 +172,8 @@ class App extends React.Component{
 
     render() {
         return (
-            <div className="App">
-                <Navbar bg="info" expand="lg">
+            <div className="App" style={{width: '100%'}}>
+                <Navbar bg="info" expand="lg" style={{width: '100%'}}>
                     <Navbar.Brand>
                         <img
                             src='./images/brand.png'
@@ -156,9 +195,9 @@ class App extends React.Component{
                         <Button variant="outline-light">Search</Button>
                     </Form>
                 </Navbar>
-                <Container fluid="true">
+                <Container fluid="true" style={{width: '99.2%', textAlign: 'center'}}>
                     <Row>
-                        <Col lg={4} className="Chat">
+                        <Col className="Chat" style={{height: '92.5vh'}}>
                             <div className="Messenger">
                                 <h1>Chat</h1>
                                 {this.state.messages.map(message =>
@@ -168,9 +207,9 @@ class App extends React.Component{
                                 )}
                             </div>
                         </Col>
-                        <Col md={3} className="ItemList"> <ItemList/> </Col>
-                        <Col md={3} className="VirtualAssistant">
-
+                        <Col className="ItemList" style={{height: '92.5vh'}}> <ItemList/> </Col>
+                        <Col className="VirtualAssistant" style={{height: '92.5vh'}}>
+                            <Dictaphone/>
                         </Col>
                     </Row>
                 </Container>
