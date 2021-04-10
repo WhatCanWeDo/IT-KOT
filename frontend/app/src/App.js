@@ -257,7 +257,7 @@ class App extends React.Component {
                         </Col>
                         <Col className="ItemList" style={{height: '92.5vh'}}> <ItemList/> </Col>
                         <Col className="VirtualAssistant" style={{height: '92.5vh'}}>
-                            <ReactPlayer url="/demo.mp4" playing={true} loop={true}/>
+                            <ReactPlayer url="/demo.mp4" playing loop/>
                             <Dictaphone/>
                         </Col>
                     </Row>
