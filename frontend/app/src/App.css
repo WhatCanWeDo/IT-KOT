@@ -20,6 +20,18 @@
   color: white;
 }
 
+
+.userMessage {
+  color: deeppink;
+  text-align: right;
+  float: right;
+}
+
+.botMessage {
+  color: deeppink;
+  text-align: left;
+  float: left;
+}
 .Chat {
   background-color: aqua;
 }

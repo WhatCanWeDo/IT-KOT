@@ -1,6 +1,7 @@
 import './App.css';
 import React, {Fragment} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import withRouter from "react-router-dom"
 import {
     CardDeck,
     Card,
@@ -26,7 +27,7 @@ function createItemCard(imageSrc, title, msgText, itemName) {
             <Card.Img variant="top" src={imageSrc}
                       width="100" height="100" alt={itemName}/>
             <Card.Title> {title} </Card.Title>
-            <Button onClick={() => pushNewMessage(msgText, true)}>
+            <Button onClick={() => makeOrder(msgText, true)}>
                 Добавить в заказ
             </Button>
             <Button onClick={() => getMoreInfo(itemName)}> Подробнее </Button>
@@ -146,28 +147,45 @@ class VirtualAssistant extends React.Component {
     }
 }
 
-function pushNewMessage(msgText, fromUser) {
+function makeOrder(msgText, fromUser, id) {
     let messages = this.state.messages
+    let order = this.state.order
     messages.push(
         {
             'msgText': msgText,
             'fromUser': fromUser
         }
     )
+    order.push(id)
     this.setState({messages})
+    this.setState({order})
 }
 
 function getMoreInfo(itemName) {
-
 }
 
+function makeOrder() {
+    let data = {'items': this.state.order}
+    const response = fetch('http://127.0.0.1:8000/query/make-order', {
+        method: 'POST',
+        cache: 'no-cache',
+        body: JSON.stringify(data)
+    })
+    if (response.json().statusCode === 200) {
+        alert('Заказ сделан')
+    }
+}
 class App extends React.Component{
     constructor(...args) {
         super(...args);
-        this.state = {'messages': []}
+        this.state = {
+            'messages': [],
+            'order': {}
+        }
     }
     componentDidMount() {
-        pushNewMessage = pushNewMessage.bind(this)
+        makeOrder = makeOrder.bind(this)
+        makeOrder = makeOrder.bind(this)
     }
 
     render() {
@@ -195,7 +213,7 @@ class App extends React.Component{
                         <Button variant="outline-light">Search</Button>
                     </Form>
                 </Navbar>
-                <Container fluid="true" style={{width: '99.2%', textAlign: 'center'}}>
+                <Container fluid="true" style={{width: '99.2%'}}>
                     <Row>
                         <Col className="Chat" style={{
                             height: '92.5vh',
@@ -206,10 +224,11 @@ class App extends React.Component{
                                 <h1>Chat</h1>
                                 {this.state.messages.map(message =>
                                 message.fromUser ?
-                                <span className="userMessage"> {message.msgText} </span>:
-                                <span className="botMessage"> {message.msgText} </span>
+                                    <span className="userMessage"> {message.msgText} <br/> </span>:
+                                    <span className="botMessage"> {message.msgText} <br/> </span>
                                 )}
                             </div>
+                            <Button onClick={makeOrder}>Сделать заказ</Button>
                         </Col>
                         <Col className="ItemList" style={{height: '92.5vh'}}> <ItemList/> </Col>
                         <Col className="VirtualAssistant" style={{height: '92.5vh'}}>
