@@ -156,17 +156,23 @@ class VirtualAssistant extends React.Component {
     }
 }
 
-function addItem(msgText, fromUser, id) {
+
+function sendToChat(msgText, fromUser) {
     let messages = this.state.messages
-    let order = this.state.order
     messages.push(
         {
             'msgText': msgText,
             'fromUser': fromUser
         }
     )
-    order.push(id)
     this.setState({messages})
+}
+
+
+function addItem(msgText, fromUser, id) {
+    let order = this.state.order
+    sendToChat(msgText, fromUser)
+    order.push(id)
     this.setState({order})
 }
 
@@ -175,15 +181,15 @@ function getMoreInfo(itemName) {
 
 function makeOrder() {
     let data = {'items': this.state.order}
-    const response = fetch('http://127.0.0.1:8000/query/make-order', {
-        body: JSON.stringify(data)
-    }, {
-        mode: 'no-cors',
+    const requestOptions = {
         method: 'POST',
-        url: `http://127.0.0.1:8000`,
-        credentials: 'include'
-    })
-    console.log(response)
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data),
+        mode: 'no-cors'
+    }
+    fetch('http://127.0.0.1:8000/query/make-order', requestOptions)
+    sendToChat('Начинаем готовить ваш заказ', false)
+
 }
 class App extends React.Component{
     constructor(...args) {
@@ -197,6 +203,7 @@ class App extends React.Component{
         makeOrder = makeOrder.bind(this)
         addItem = addItem.bind(this)
         getMoreInfo = getMoreInfo.bind(this)
+        sendToChat = sendToChat.bind(this)
     }
 
     render() {
