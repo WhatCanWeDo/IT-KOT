@@ -21,13 +21,13 @@ import Dictaphone from "./Dictaphone";
 import {Md3DRotation} from "react-icons/all";
 
 
-function createItemCard(imageSrc, title, msgText, itemName) {
+function createItemCard(imageSrc, title, msgText, itemName, itemId) {
     return (
         <Card>
             <Card.Img variant="top" src={imageSrc}
                       width="100" height="100" alt={itemName}/>
             <Card.Title> {title} </Card.Title>
-            <Button onClick={() => makeOrder(msgText, true)}>
+            <Button onClick={() => addItem(msgText, true, itemId)}>
                 Добавить в заказ
             </Button>
             <Button onClick={() => getMoreInfo(itemName)}> Подробнее </Button>
@@ -46,19 +46,22 @@ class ItemList extends React.Component {
                         "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
                         "Салат Цезарь",
                         "Салат Цезарь добавлен в заказ",
-                        "Cesar"
+                        "Cesar",
+                        0,
                     )}
                     {createItemCard(
                         "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
                         "Салат Цезарь",
                         "Салат Цезарь добавлен в заказ",
-                        "Cesar"
+                        "Cesar",
+                        1,
                     )}
                     {createItemCard(
                         "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
                         "Салат Цезарь",
                         "Салат Цезарь добавлен в заказ",
-                        "Cesar"
+                        "Cesar",
+                        2
                     )}
                 </CardDeck>
                 <br/>
@@ -73,19 +76,22 @@ class ItemList extends React.Component {
                         "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
                         "Салат Цезарь",
                         "Салат Цезарь добавлен в заказ",
-                        "Cesar"
+                        "Cesar",
+                        3
                     )}
                     {createItemCard(
                         "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
                         "Салат Цезарь",
                         "Салат Цезарь добавлен в заказ",
-                        "Cesar"
+                        "Cesar",
+                        4
                     )}
                     {createItemCard(
                         "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
                         "Салат Цезарь",
                         "Салат Цезарь добавлен в заказ",
-                        "Cesar"
+                        "Cesar",
+                        5
                     )}
                 </CardDeck>
                 <br/>
@@ -95,19 +101,22 @@ class ItemList extends React.Component {
                         "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
                         "Салат Цезарь",
                         "Салат Цезарь добавлен в заказ",
-                        "Cesar"
+                        "Cesar",
+                        6
                     )}
                     {createItemCard(
                         "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
                         "Салат Цезарь",
                         "Салат Цезарь добавлен в заказ",
-                        "Cesar"
+                        "Cesar",
+                        7
                     )}
                     {createItemCard(
                         "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
                         "Салат Цезарь",
                         "Салат Цезарь добавлен в заказ",
-                        "Cesar"
+                        "Cesar",
+                        8
                     )}
                 </CardDeck>
                 <br/>
@@ -147,7 +156,7 @@ class VirtualAssistant extends React.Component {
     }
 }
 
-function makeOrder(msgText, fromUser, id) {
+function addItem(msgText, fromUser, id) {
     let messages = this.state.messages
     let order = this.state.order
     messages.push(
@@ -167,25 +176,27 @@ function getMoreInfo(itemName) {
 function makeOrder() {
     let data = {'items': this.state.order}
     const response = fetch('http://127.0.0.1:8000/query/make-order', {
-        method: 'POST',
-        cache: 'no-cache',
         body: JSON.stringify(data)
+    }, {
+        mode: 'no-cors',
+        method: 'POST',
+        url: `http://127.0.0.1:8000`,
+        credentials: 'include'
     })
-    if (response.json().statusCode === 200) {
-        alert('Заказ сделан')
-    }
+    console.log(response)
 }
 class App extends React.Component{
     constructor(...args) {
         super(...args);
         this.state = {
             'messages': [],
-            'order': {}
+            'order': []
         }
     }
     componentDidMount() {
         makeOrder = makeOrder.bind(this)
-        makeOrder = makeOrder.bind(this)
+        addItem = addItem.bind(this)
+        getMoreInfo = getMoreInfo.bind(this)
     }
 
     render() {
@@ -222,10 +233,10 @@ class App extends React.Component{
                                 backgroundColor: 'white',
                             }}>
                                 <h1>Chat</h1>
-                                {this.state.messages.map(message =>
+                                {this.state.messages.map((message, i) =>
                                 message.fromUser ?
-                                    <span className="userMessage"> {message.msgText} <br/> </span>:
-                                    <span className="botMessage"> {message.msgText} <br/> </span>
+                                    <span className="userMessage" key={i}> {message.msgText} <br/> </span>:
+                                    <span className="botMessage" key={i}> {message.msgText} <br/> </span>
                                 )}
                             </div>
                             <Button onClick={makeOrder}>Сделать заказ</Button>
