@@ -1,7 +1,7 @@
 import './App.css';
 import React, {Fragment} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import withRouter from "react-router-dom"
+import ReactPlayer from 'react-player'
 import {
     CardDeck,
     Card,
@@ -19,7 +19,6 @@ import {
 } from "react-bootstrap"
 import Dictaphone from "./Dictaphone";
 import {Md3DRotation} from "react-icons/all";
-
 
 function createItemCard(imageSrc, title, msgText, itemName, itemId) {
     return (
@@ -191,7 +190,15 @@ function makeOrder() {
     sendToChat('Начинаем готовить ваш заказ', false)
 
 }
-class App extends React.Component{
+
+
+class CanvasVideo extends React.Component {
+    constructor() {
+        super();
+    }
+}
+
+class App extends React.Component {
     constructor(...args) {
         super(...args);
         this.state = {
@@ -250,6 +257,7 @@ class App extends React.Component{
                         </Col>
                         <Col className="ItemList" style={{height: '92.5vh'}}> <ItemList/> </Col>
                         <Col className="VirtualAssistant" style={{height: '92.5vh'}}>
+                            <ReactPlayer url="/demo.mp4" playing={true} loop={true}/>
                             <Dictaphone/>
                         </Col>
                     </Row>
