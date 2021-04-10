@@ -18,18 +18,28 @@ import {
     Alert
 } from "react-bootstrap"
 import Dictaphone from "./Dictaphone";
-import {Md3DRotation} from "react-icons/all";
 
 function createItemCard(imageSrc, title, msgText, itemName, itemId) {
     return (
-        <Card>
+        <Card className="Card" shadow={true}>
             <Card.Img variant="top" src={imageSrc}
                       width="100" height="100" alt={itemName}/>
-            <Card.Title> {title} </Card.Title>
-            <Button onClick={() => addItem(msgText, true, itemId)}>
-                Добавить в заказ
+            <Card.Title className="CardTitle" as="a" onClick={() => getMoreInfo(itemName)}> {title} </Card.Title>
+            <Button className="CardButton" style={
+                {
+                    backgroundColor: 'yellowgreen',
+                    paddingLeft: '10%',
+                    paddingRight: '10%',
+                    width: '70%',
+                    textAlign: 'center',
+                    alignSelf: 'center',
+                    fontSize: '90%',
+                    fontFamily: 'sans-serif',
+                    border: "green"
+                }
+            } onClick={() => addItem(msgText, true, itemId)}>
+                Добавить
             </Button>
-            <Button onClick={() => getMoreInfo(itemName)}> Подробнее </Button>
         </Card>
     )
 }
@@ -38,9 +48,8 @@ class ItemList extends React.Component {
     render() {
         return (
             <div className="item-list">
-                <h1>Меню</h1>
-                <CardDeck style={{height: '20vh'}}>
-                    <Container>Салаты</Container>
+                <CardDeck className="Deck">
+                    <Container className="CategoryTitle">Салаты</Container>
                     {createItemCard(
                         "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
                         "Салат Цезарь",
@@ -64,13 +73,8 @@ class ItemList extends React.Component {
                     )}
                 </CardDeck>
                 <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-
-                <CardDeck style={{height: '20vh'}}>
-                    <Container>Хинкал</Container>
+                <CardDeck className="Deck">
+                    <Container className="CategoryTitle">Хинкал</Container>
                     {createItemCard(
                         "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
                         "Салат Цезарь",
@@ -94,8 +98,8 @@ class ItemList extends React.Component {
                     )}
                 </CardDeck>
                 <br/>
-                <CardDeck style={{height: '20vh'}}>
-                    <Container>Алкоголь</Container>
+                <CardDeck className="Deck">
+                    <Container className="CategoryTitle">Алкоголь</Container>
                     {createItemCard(
                         "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
                         "Салат Цезарь",
@@ -119,27 +123,6 @@ class ItemList extends React.Component {
                     )}
                 </CardDeck>
                 <br/>
-                <CardDeck style={{height: '20vh'}}>
-                    <Container>Напитки</Container>
-                    {createItemCard(
-                        "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
-                        "Салат Цезарь",
-                        "Салат Цезарь добавлен в заказ",
-                        "Cesar"
-                    )}
-                    {createItemCard(
-                        "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
-                        "Салат Цезарь",
-                        "Салат Цезарь добавлен в заказ",
-                        "Cesar"
-                    )}
-                    {createItemCard(
-                        "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
-                        "Салат Цезарь",
-                        "Салат Цезарь добавлен в заказ",
-                        "Cesar"
-                    )}
-                </CardDeck>
             </div>
         );
     }
@@ -176,6 +159,13 @@ function addItem(msgText, fromUser, id) {
 }
 
 function getMoreInfo(itemName) {
+    alert('IEJOWIFJIJiJ')
+}
+
+function changeCurrentPlayer(video_src, looped) {
+    let currentPlayer = this.state.currentPlayer
+    currentPlayer = <ReactPlayer height='100%' width='100%' url={video_src} playing loop={looped} />
+    this.setState({currentPlayer})
 }
 
 function makeOrder() {
@@ -192,18 +182,13 @@ function makeOrder() {
 }
 
 
-class CanvasVideo extends React.Component {
-    constructor() {
-        super();
-    }
-}
-
 class App extends React.Component {
     constructor(...args) {
         super(...args);
         this.state = {
             'messages': [],
-            'order': []
+            'order': [],
+            'currentPlayer': <ReactPlayer height='100%' width='100%' url="/demo.mp4" playing={true}/>
         }
     }
     componentDidMount() {
@@ -211,32 +196,32 @@ class App extends React.Component {
         addItem = addItem.bind(this)
         getMoreInfo = getMoreInfo.bind(this)
         sendToChat = sendToChat.bind(this)
+        changeCurrentPlayer = changeCurrentPlayer.bind(this)
+
     }
 
     render() {
         return (
             <div className="App" style={{width: '100%'}}>
                 <Navbar bg="info" expand="lg" style={{width: '100%'}}>
-                    <Navbar.Brand>
+                    <Navbar.Brand style={{
+                        width: "10%",
+                        height: "10%"
+                    }}>
                         <img
-                            src='./images/brand.png'
-                            width="10"
-                            height="10"
+                            src='brand.svg'
+                            width="30%"
+                            height="30%"
                             className="d-inline-block align-top"
                         />
                     </Navbar.Brand>
-                    <Navbar.Toggle aria-controls="basic-navbar-nav"/>
-                    <Nav className="mr-auto">
-                        <NavDropdown id="basic-nav-dropdown" title="Dropdown">
-                            <NavDropdown.Item href="action/1">Action 1</NavDropdown.Item>
-                            <NavDropdown.Item href="action/2">Action 2</NavDropdown.Item>
-                            <NavDropdown.Item href="action/3">Action 3</NavDropdown.Item>
-                        </NavDropdown>
-                    </Nav>
-                    <Form inline>
-                        <FormControl type="text" placeholder="Search" className="mr-sm-2"/>
-                        <Button variant="outline-light">Search</Button>
-                    </Form>
+                    <Navbar.Collapse className="">
+                        <Navbar.Text className="text-left">Чат</Navbar.Text>
+                    </Navbar.Collapse>
+                    <Navbar.Collapse>
+                    <Navbar.Text className="text-center">Меню</Navbar.Text>
+                    </Navbar.Collapse>
+                    <Navbar.Text className="text-right">Ассистент</Navbar.Text>
                 </Navbar>
                 <Container fluid="true" style={{width: '99.2%'}}>
                     <Row>
@@ -246,7 +231,6 @@ class App extends React.Component {
                             <div className="Messenger" style={{
                                 backgroundColor: 'white',
                             }}>
-                                <h1>Chat</h1>
                                 {this.state.messages.map((message, i) =>
                                 message.fromUser ?
                                     <span className="userMessage" key={i}> {message.msgText} <br/> </span>:
@@ -257,7 +241,6 @@ class App extends React.Component {
                         </Col>
                         <Col className="ItemList" style={{height: '92.5vh'}}> <ItemList/> </Col>
                         <Col className="VirtualAssistant" style={{height: '92.5vh'}}>
-                            <ReactPlayer url="/demo.mp4" playing={true} loop={true}/>
                             <Dictaphone/>
                         </Col>
                     </Row>

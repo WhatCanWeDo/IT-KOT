@@ -36,7 +36,6 @@ class Dictaphone extends React.Component {
         const handleStopListen = event => {
             this.props.stopListening();
             this.setState({muted: true})
-            alert(transcript)
         }
 
         const resetListen = () => {
