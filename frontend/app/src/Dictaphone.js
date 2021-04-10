@@ -26,7 +26,9 @@ class Dictaphone extends React.Component {
             if (listening) {
                 this.props.abortListening();
             }
-            this.props.startListening({language: 'ru'});
+            this.props.recognition.lang = 'ru'
+            this.props.startListening();
+            console.log(this.props)
             this.setState({ muted: false })
             event.target.classList.toggle("record");
         };

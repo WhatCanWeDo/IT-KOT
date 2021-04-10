@@ -197,8 +197,12 @@ class App extends React.Component{
                 </Navbar>
                 <Container fluid="true" style={{width: '99.2%', textAlign: 'center'}}>
                     <Row>
-                        <Col className="Chat" style={{height: '92.5vh'}}>
-                            <div className="Messenger">
+                        <Col className="Chat" style={{
+                            height: '92.5vh',
+                        }}>
+                            <div className="Messenger" style={{
+                                backgroundColor: 'white',
+                            }}>
                                 <h1>Chat</h1>
                                 {this.state.messages.map(message =>
                                 message.fromUser ?
