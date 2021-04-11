@@ -37,10 +37,10 @@ class Dictaphone extends React.Component {
         } = this.props;
 
         const text2items = text => {
-            var items = ["цезарь", "греческий", "морепродуктов", "баранин", "говя", "индейк", "испан", "итал", "франц", "гранат", "вод", "лимонад"];
+            var items = ["цезарь", "греческ", "морепродуктов", "баранин", "говя", "индейк", "испан", "бел", "гранат"];
             var full_names = [
                 "Салат Цезарь", "Греческий салат", "Салат из морепродуктов", "Хинкал (баранина)", "Хинкал (говядина)", 
-                "Хинкал (индейка)", "Красное вино (Испания)", "Красное вино (Италия)", "Белое вино (Франция)", "Гранатовый сок", "Минеральная вода", 'Лимонад "Буратино"'];
+                "Хинкал (индейка)", "Красное вино (Испания)", "Белое вино (Франция)", "Гранатовый сок"];
             var actualItems = [];
             items.forEach(
                 (item, index, arr) => {if (text.includes(item)){actualItems.push(full_names[index])}}
@@ -48,10 +48,10 @@ class Dictaphone extends React.Component {
             return actualItems
         }
 
-        const handleUserIntention = text => {
-            text = text.toLowerCase();
+        const handleUserIntention = () => {
+            let text = transcript.toLowerCase();
             // готовы
-            if (transcript.includes('добав') | transcript.includes('можно')){  // добавить товары в корзину
+            if (text.includes('добав') || text.includes('можно') || text.includes('закаж') || text.includes('давай')){  // добавить товары в корзину
                 var ordered = text2items(text);
                 if (ordered.length == 0){
                     changeCurrentPlayer('/didnt_get_it.mp4', false)
@@ -60,26 +60,30 @@ class Dictaphone extends React.Component {
                     changeCurrentPlayer('/well.mp4', false)
                     setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 3000)    
                     ordered.forEach(
-                        (item, index, arr) => {addItem("Добавили в корзину " + item, false)}
+                        (item, index, arr) => {addItem("Добавили к заказу " + item, false)}
                     )
                 }
-            } else if (transcript.includes('всё')){  // отправить заказ на бэкэнд
+            } else if (text.includes('хватит')){  // отправить заказ на бэкэнд
                 makeOrder();
                 changeCurrentPlayer('/start_cooking.mp4', false)
                 setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 3000)
             } 
-            else if ((transcript.includes('подсказ') | transcript.includes('совет')) && transcript.includes('пит')){
+            else if ((text.includes('подсказ') || text.includes('совет')) && text.includes('пит')){
                 changeCurrentPlayer('/what_to_drink.mp4', false)
+                sendToChat('Советую вам заказать гранатовый сок. Мы выжимаем его   из гранатов выращенных на местных фермах прямо у нас на кухне.', false)
                 setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 9000)
             }
-            else if ((transcript.includes('подсказ') | transcript.includes('совет')) && transcript.includes('ед')){
+            else if ((text.includes('подсказ') || text.includes('совет')) && text.includes('ед')){
                 changeCurrentPlayer('/suggest_caesar.mp4', false)
+                sendToChat('Советую вам попробовать салат Цезарь, это фирменное блюдо нашего шефа.', false)
                 setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 6000)
-            } else if (transcript.includes('счёт') | transcript.includes('счет')){
+            } else if (text.includes('счёт') || text.includes('счет')){
                 changeCurrentPlayer('/payment.mp4', false)
+                sendToChat('С вас 570 рублей, можете приложить карту для оплаты. Также, будем рады, если вы оставите свой отзыв о нас.', false)
                 setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 10000)
             } else {
                 changeCurrentPlayer('/didnt_get_it.mp4', false)
+                sendToChat('Извините, я не совсем вас поняла', false)
                 setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 5000)
             }
         }
@@ -99,6 +103,9 @@ class Dictaphone extends React.Component {
         const handleStopListen = event => {
             this.props.stopListening();
             this.setState({muted: true})
+            if (transcript !== ''){
+                sendToChat(transcript, true)
+            }
             handleUserIntention(transcript)
         }
 
@@ -125,6 +132,7 @@ class Dictaphone extends React.Component {
         } else {
             return (
                 <div className="wrapper">
+                    {console.log(transcript)}
                     <Button className="MicButton" onClick={handleStopListen} style={{
                         borderRadius: '45%',
                         border: '4px solid green',
@@ -148,18 +156,19 @@ function createItemCard(imageSrc, title, msgText, itemName, itemId) {
             <Card.Title className="CardTitle" as="a" onClick={() => getMoreInfo(itemName)}> {title} </Card.Title>
             <Button className="CardButton" style={
                 {
-                    backgroundColor: 'yellowgreen',
-                    paddingLeft: '10%',
-                    paddingRight: '10%',
+                    background: '#0ec645',
+                    paddingLeft: '5%',
+                    paddingRight: '5%',
                     width: '70%',
                     textAlign: 'center',
                     alignSelf: 'center',
-                    fontSize: '90%',
+                    fontSize: '70%',
                     fontFamily: 'sans-serif',
+                    fontWeight: 700,
                     border: "green"
                 }
             } onClick={() => addItem(msgText, false, itemId)}>
-                Добавить
+                ДОБАВИТЬ
             </Button>
         </Card>
     )
@@ -172,24 +181,24 @@ class ItemList extends React.Component {
                 <CardDeck className="Deck">
                     <Container className="CategoryTitle">Салаты</Container>
                     {createItemCard(
-                        "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
+                        "http://radka.in.ua/wp-content/uploads/2017/06/72e529a384da540324ddf6c7034f52dd.jpg",
                         "Салат Цезарь",
                         "Салат Цезарь добавлен в заказ",
                         "Cesar",
                         0,
                     )}
                     {createItemCard(
-                        "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
-                        "Салат Цезарь",
-                        "Салат Цезарь добавлен в заказ",
-                        "Cesar",
+                        "https://www.vestniksr.ru/upload/000/u1/d/3/salat-grecheskii-photo-big.jpg",
+                        "Греческий салат",
+                        "Греческий салат добавлен в заказ",
+                        "greek",
                         1,
                     )}
                     {createItemCard(
-                        "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
-                        "Салат Цезарь",
-                        "Салат Цезарь добавлен в заказ",
-                        "Cesar",
+                        "https://richifamily.ru/upload/resize_cache/iblock/233/450_450_0/23328d98b5b458d16200c97a21e20fce.JPG",
+                        "Салат из морепродуктов",
+                        "Салат из морепродуктов добавлен в заказ",
+                        "seafood",
                         2
                     )}
                 </CardDeck>
@@ -197,49 +206,49 @@ class ItemList extends React.Component {
                 <CardDeck className="Deck">
                     <Container className="CategoryTitle">Хинкал</Container>
                     {createItemCard(
-                        "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
-                        "Салат Цезарь",
-                        "Салат Цезарь добавлен в заказ",
-                        "Cesar",
+                        "https://cdn.the-village.ru/the-village.ru/post_image-image/nChWrV6k_dtQkrSSNt2Iwg.jpg",
+                        "Хинкал (индейка)",
+                        "Хинкал (индейка) добавлен в заказ",
+                        "hinkal_ind",
                         3
                     )}
                     {createItemCard(
-                        "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
-                        "Салат Цезарь",
-                        "Салат Цезарь добавлен в заказ",
-                        "Cesar",
+                        "https://odelita.ru/sites/default/files/styles/800_600/public/images/2017/09/avarskij-hinkal_w372_h248.jpg?itok\u003dsYKQlEyP",
+                        "Хинкал (баранина)",
+                        "Хинкал (баранина) добавлен в заказ",
+                        "hinkal",
                         4
                     )}
                     {createItemCard(
-                        "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
-                        "Салат Цезарь",
-                        "Салат Цезарь добавлен в заказ",
-                        "Cesar",
+                        "https://i.mycdn.me/i?r=AzEPZsRbOZEKgBhR0XGMT1RkXV5mISzRq0G7lmPqX82d1aaKTM5SRkZCeTgDn6uOyic",
+                        "Хинкал (говядина)",
+                        "Хинкал (говядина) добавлен в заказ",
+                        "hinkal_go",
                         5
                     )}
                 </CardDeck>
                 <br/>
                 <CardDeck className="Deck">
-                    <Container className="CategoryTitle">Алкоголь</Container>
+                    <Container className="CategoryTitle">Напитки</Container>
                     {createItemCard(
-                        "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
-                        "Салат Цезарь",
-                        "Салат Цезарь добавлен в заказ",
-                        "Cesar",
+                        "https://wallbox.ru/resize/800x480/wallpapers/main2/201714/149161738758e8466b3e7828.09558990.jpg",
+                        "Красное вино (Испания)",
+                        "Красное вино (Испания) добавлен в заказ",
+                        "spain",
                         6
                     )}
                     {createItemCard(
-                        "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
-                        "Салат Цезарь",
-                        "Салат Цезарь добавлен в заказ",
-                        "Cesar",
+                        "https://sonko-mosreg.ru/800/600/https/avatars.mds.yandex.net/get-zen_doc/1877575/pub_5db44613c49f2900ad3b99cb_5db49547c7e50c00ad7edf88/scale_1200",
+                        "Белое вино (Франция)",
+                        "Белое вино (Франция) добавлен в заказ",
+                        "franch",
                         7
                     )}
                     {createItemCard(
-                        "https://st.vkuso.ru/data/cache/thumb/9e/6006e0b9367ac9e_660x440.jpg",
-                        "Салат Цезарь",
-                        "Салат Цезарь добавлен в заказ",
-                        "Cesar",
+                        "https://www.prostreno.cz/image.ashx/36725/3137313032353137323430372d3532323536373439332e6a7067/640/480",
+                        "Гранатовый сок",
+                        "Гранатовый сок добавлен в заказ",
+                        "grenade",
                         8
                     )}
                 </CardDeck>
@@ -304,7 +313,6 @@ function addItem(msgText, fromUser, id) {
 }
 
 function getMoreInfo(itemName) {
-    alert('IEJOWIFJIJiJ')
 }
 
 function changeCurrentPlayer(video_src, looped) {
@@ -357,7 +365,7 @@ class App extends React.Component {
                         height: "10%"
                     }}>
                         <img
-                            src='brand.svg'
+                            src='logo.png'
                             width="30%"
                             height="30%"
                             className="d-inline-block align-top"
@@ -368,15 +376,15 @@ class App extends React.Component {
                                   {
                                     marginLeft: '2%',
                                   }
-                              }>Чат</span>
+                              }>История</span>
                         <span className="HeadSpan" style={{
-                            marginLeft: '31.5%',
+                            marginLeft: '27%',
                         }} >Меню</span>
                     <span className="HeadSpan" style={{
-                        marginLeft: '29%'
+                        marginLeft: '27%'
                     }}>Ассистент</span>
                 </Navbar>
-                <Container fluid="true" style={{width: '99.2%'}}>
+                <Container fluid="true" style={{width: '99.2%', backgroundColor: 'whitesmoke'}}>
                     <Row>
                         <Col className="Chat">
                             <MessageBox messages={this.state.messages}/>
