@@ -1,5 +1,12 @@
 import './App.css';
-import React, {Fragment} from "react";
+
+
+import SpeechRecognition from "react-speech-recognition";
+import {BsMic, BsMicMute} from "react-icons/bs";
+import {Button} from "react-bootstrap";
+import "./App.css"
+
+import React, {Fragment, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ReactPlayer from 'react-player'
 import {
@@ -10,15 +17,133 @@ import {
     Nav,
     NavDropdown,
     FormControl,
-    Button,
     Container,
     Col,
     Row,
     ListGroup,
     Alert
 } from "react-bootstrap"
-import Dictaphone from "./Dictaphone";
 import {Md3DRotation} from "react-icons/all";
+
+
+const options = {
+    autoStart: false,
+    continuous: true
+};
+class Dictaphone extends React.Component {
+    constructor(...args) {
+        super(...args);
+        this.state = {muted: true}
+    }
+    render() {
+        const {
+            listening,
+            transcript,
+            interimTranscript,
+            finalTranscript,
+            browserSupportsSpeechRecognition
+        } = this.props;
+
+        const text2items = text => {
+            var items = ["цезарь", "греческий", "морепродуктов", "баранин", "говядин", "индейк", "испан", "итал", "франц", "гранат", "вод", "лимонад"];
+            var actualItems = [];
+            items.forEach(
+                (item, index, arr) => {if (text.includes(item)){actualItems.push(item)}}
+            )
+            return actualItems
+        }
+
+        const handleUserIntention = text => {
+            text = text.toLowerCase();
+            // готовы
+            if (transcript.includes('добавь')){  // добавить товары в корзину
+                var ordered = text2items(text);
+                if (ordered.length == 0){
+                    changeCurrentPlayer('/didnt_get_it.mp4', false)
+                    setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 3000)
+                } else{
+                    ordered.forEach(
+                        (item, index, arr) => {addItem("Добавили в корзину " + item, false)}
+                    )
+                }
+            } else if (transcript.includes('на этом всё')){  // отправить заказ на бэкэнд
+                makeOrder();
+                changeCurrentPlayer('/start_cooking.mp4', true)
+                setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 3000)
+            } 
+            else if (transcript.includes('подсказать') && transcript.includes('напит')){
+                changeCurrentPlayer('/want_to_drinkg.mp4', true)
+                setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 8000)
+
+            } else if (transcript.includes('всё') && transcript.includes('спасибо')){
+                alert('хочеца подсказку')
+            // еще не готовы
+            } else if (transcript.includes('можете подсказать')){
+                alert('хочеца подсказку')
+            }
+        }
+
+        const handleStartListen = event => {
+            if (listening) {
+                this.props.abortListening();
+            }
+            this.props.resetTranscript();
+            this.props.recognition.lang = 'ru'
+            this.props.startListening();
+            console.log(this.props)
+            this.setState({ muted: false })
+            event.target.classList.toggle("record");
+        };
+
+        const handleStopListen = event => {
+            this.props.stopListening();
+            this.setState({muted: true})
+            handleUserIntention(transcript)
+        }
+
+        const resetListen = () => {
+            this.props.resetTranscript();
+        };
+
+        if (!browserSupportsSpeechRecognition) {
+            return null;
+        }
+
+        if (this.state.muted) {
+            return (
+                <div className="wrapper">
+                    <Button className="MicButton" onClick={handleStartListen} style={{
+                        borderRadius: '45%',
+                        border: '5px solid white',
+                        backgroundColor: 'black'
+                    }}>
+                        <BsMicMute className="Mic" size="50px" style={{ margin : '0 5px'}}/>
+                    </Button>
+                    <div id="output" className="output">
+                        {transcript}
+                    </div>
+                </div>
+            )
+        } else {
+            return (
+                <div className="wrapper">
+                    <Button className="MicButton" onClick={handleStopListen} style={{
+                        borderRadius: '45%',
+                        border: '5px solid white',
+                        backgroundColor: 'black'
+                    }}>
+                        <BsMic className="Mic" size="50px" style={{ margin : '0 5px'}}/>
+                    </Button>   
+                    <div id="output" className="output">
+                        {transcript}
+                    </div>
+                </div>
+            )
+        }
+    }
+}
+
+let Dict = SpeechRecognition(options)(Dictaphone);
 
 function createItemCard(imageSrc, title, msgText, itemName, itemId) {
     return (
@@ -155,7 +280,6 @@ class VirtualAssistant extends React.Component {
     }
 }
 
-
 function sendToChat(msgText, fromUser) {
     let messages = this.state.messages
     messages.push(
@@ -166,7 +290,6 @@ function sendToChat(msgText, fromUser) {
     )
     this.setState({messages})
 }
-
 
 function addItem(msgText, fromUser, id) {
     let order = this.state.order
@@ -198,19 +321,30 @@ class CanvasVideo extends React.Component {
     }
 }
 
+function changeCurrentPlayer(video_src, looped) {
+    let currentPlayer = this.state.currentPlayer
+    currentPlayer = <ReactPlayer height='100%' width='100%' url={video_src} playing loop={looped} />
+    this.setState({currentPlayer})
+}
+
 class App extends React.Component {
     constructor(...args) {
         super(...args);
         this.state = {
             'messages': [],
-            'order': []
+            'order': [],
+            'currentPlayer': <ReactPlayer height='100%' width='100%' url="/demo.mp4" playing loop/>
         }
     }
+    
     componentDidMount() {
+        sendToChat = sendToChat.bind(this)
         makeOrder = makeOrder.bind(this)
         addItem = addItem.bind(this)
         getMoreInfo = getMoreInfo.bind(this)
-        sendToChat = sendToChat.bind(this)
+        changeCurrentPlayer = changeCurrentPlayer.bind(this)
+        setTimeout(function(){changeCurrentPlayer('/welcome.mp4')}, 500)
+        setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 13000)
     }
 
     render() {
@@ -257,8 +391,8 @@ class App extends React.Component {
                         </Col>
                         <Col className="ItemList" style={{height: '92.5vh'}}> <ItemList/> </Col>
                         <Col className="VirtualAssistant" style={{height: '92.5vh'}}>
-                            <ReactPlayer url="/demo.mp4" playing loop/>
-                            <Dictaphone/>
+                            {this.state.currentPlayer}
+                            <Dict/>
                         </Col>
                     </Row>
                 </Container>
