@@ -39,11 +39,11 @@ class Dictaphone extends React.Component {
         const text2items = text => {
             var items = ["цезарь", "греческ", "морепродуктов", "баранин", "говя", "индейк", "испан", "бел", "гранат"];
             var full_names = [
-                "Салат Цезарь", "Греческий салат", "Салат из морепродуктов", "Хинкал (баранина)", "Хинкал (говядина)", 
+                "Салат Цезарь", "Греческий салат", "Салат из морепродуктов", "Хинкал (говядина)", "Хинкал (баранина)",
                 "Хинкал (индейка)", "Красное вино (Испания)", "Белое вино (Франция)", "Гранатовый сок"];
             var actualItems = [];
             items.forEach(
-                (item, index, arr) => {if (text.includes(item)){actualItems.push(full_names[index])}}
+                (item, index, arr) => {if (text.includes(item)){actualItems.push([full_names[index], index])}}
             )
             return actualItems
         }
@@ -51,19 +51,13 @@ class Dictaphone extends React.Component {
         const handleUserIntention = () => {
             let text = transcript.toLowerCase();
             // готовы
-            if (text.includes('добав') || text.includes('можно') || text.includes('закаж') || text.includes('давай')){  // добавить товары в корзину
-                let ordered = text2items(text);
-                if (ordered.length === 0){
-                    changeCurrentPlayer('/didnt_get_it.mp4', false)
-                    setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 5000)
-                } else{
-                    changeCurrentPlayer('/well.mp4', false)
-                    setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 3000)    
-                    ordered.forEach(
-                        (item, index, arr) => {addItem("Добавили к заказу " + item, false)}
-                    )
-                }
-            } else if (text.includes('хватит')){  // отправить заказ на бэкэнд
+
+            if ((text.includes('подсказ') || text.includes('совет')) && (text.includes('ед') || text.includes('поесть'))){
+                changeCurrentPlayer('/suggest_caesar.mp4', false)
+                sendToChat('Советую вам попробовать салат Цезарь, это фирменное блюдо нашего шефа.', false)
+                setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 6000)
+            }
+            else if (text.includes('хватит') || (text.includes('оформ') && text.includes('заказ'))){  // отправить заказ на бэкэнд
                 makeOrder();
                 changeCurrentPlayer('/start_cooking.mp4', false)
                 setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 3000)
@@ -73,10 +67,18 @@ class Dictaphone extends React.Component {
                 sendToChat('Советую вам заказать гранатовый сок. Мы выжимаем его   из гранатов выращенных на местных фермах прямо у нас на кухне.', false)
                 setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 9000)
             }
-            else if ((text.includes('подсказ') || text.includes('совет')) && (text.includes('ед') || text.includes('поесть'))){
-                changeCurrentPlayer('/suggest_caesar.mp4', false)
-                sendToChat('Советую вам попробовать салат Цезарь, это фирменное блюдо нашего шефа.', false)
-                setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 6000)
+            else if (text.includes('добав') || text.includes('можно') || text.includes('закаж') || text.includes('давай') || text.includes('хоч')){  // добавить товары в корзину
+                var ordered = text2items(text);
+                if (ordered.length === 0){
+                     changeCurrentPlayer('/didnt_get_it.mp4', false)
+                    setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 5000)
+                } else{
+                    changeCurrentPlayer('/well.mp4', false)
+                    setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 3000)    
+                    ordered.forEach(
+                        (item, index, arr) => {addItem("Добавили к заказу " + item[0], false, item[1])}
+                    )
+                }
             } else if (text.includes('счёт') || text.includes('счет')){
                 changeCurrentPlayer('/payment.mp4', false)
                 sendToChat('С вас 570 рублей, можете приложить карту для оплаты. Также, будем рады, если вы оставите свой отзыв о нас.', false)
@@ -331,6 +333,7 @@ function makeOrder() {
         mode: 'no-cors'
     }
     fetch('http://127.0.0.1:8000/query/make-order', requestOptions)
+    this.state.order = []
     sendToChat('Начинаем готовить ваш заказ', false)
 
 }
