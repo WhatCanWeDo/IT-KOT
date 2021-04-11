@@ -43,10 +43,13 @@ class Dictaphone extends React.Component {
         } = this.props;
 
         const text2items = text => {
-            var items = ["цезарь", "греческий", "морепродуктов", "баранин", "говядин", "индейк", "испан", "итал", "франц", "гранат", "вод", "лимонад"];
+            var items = ["цезарь", "греческий", "морепродуктов", "баранин", "говя", "индейк", "испан", "итал", "франц", "гранат", "вод", "лимонад"];
+            var full_names = [
+                "Салат Цезарь", "Греческий салат", "Салат из морепродуктов", "Хинкал (баранина)", "Хинкал (говядина)", 
+                "Хинкал (индейка)", "Красное вино (Испания)", "Красное вино (Италия)", "Белое вино (Франция)", "Гранатовый сок", "Минеральная вода", 'Лимонад "Буратино"'];
             var actualItems = [];
             items.forEach(
-                (item, index, arr) => {if (text.includes(item)){actualItems.push(item)}}
+                (item, index, arr) => {if (text.includes(item)){actualItems.push(full_names[index])}}
             )
             return actualItems
         }
@@ -54,30 +57,36 @@ class Dictaphone extends React.Component {
         const handleUserIntention = text => {
             text = text.toLowerCase();
             // готовы
-            if (transcript.includes('добавь')){  // добавить товары в корзину
+            if (transcript.includes('добав') | transcript.includes('можно')){  // добавить товары в корзину
                 var ordered = text2items(text);
                 if (ordered.length == 0){
                     changeCurrentPlayer('/didnt_get_it.mp4', false)
-                    setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 3000)
+                    setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 5000)
                 } else{
+                    changeCurrentPlayer('/well.mp4', false)
+                    setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 3000)    
                     ordered.forEach(
                         (item, index, arr) => {addItem("Добавили в корзину " + item, false)}
                     )
                 }
-            } else if (transcript.includes('на этом всё')){  // отправить заказ на бэкэнд
+            } else if (transcript.includes('всё')){  // отправить заказ на бэкэнд
                 makeOrder();
-                changeCurrentPlayer('/start_cooking.mp4', true)
+                changeCurrentPlayer('/start_cooking.mp4', false)
                 setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 3000)
             } 
-            else if (transcript.includes('подсказать') && transcript.includes('напит')){
-                changeCurrentPlayer('/want_to_drinkg.mp4', true)
-                setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 8000)
-
-            } else if (transcript.includes('всё') && transcript.includes('спасибо')){
-                alert('хочеца подсказку')
-            // еще не готовы
-            } else if (transcript.includes('можете подсказать')){
-                alert('хочеца подсказку')
+            else if ((transcript.includes('подсказ') | transcript.includes('совет')) && transcript.includes('пит')){
+                changeCurrentPlayer('/what_to_drink.mp4', false)
+                setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 9000)
+            }
+            else if ((transcript.includes('подсказ') | transcript.includes('совет')) && transcript.includes('ед')){
+                changeCurrentPlayer('/suggest_caesar.mp4', false)
+                setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 6000)
+            } else if (transcript.includes('счёт') | transcript.includes('счет')){
+                changeCurrentPlayer('/payment.mp4', false)
+                setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 10000)
+            } else {
+                changeCurrentPlayer('/didnt_get_it.mp4', false)
+                setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 5000)
             }
         }
 
