@@ -1,27 +1,21 @@
 import './App.scss';
 
 import SpeechRecognition from "react-speech-recognition";
-import {BsMic, BsMicMute} from "react-icons/bs";
+import {FaMicrophone, FaMicrophoneSlash} from "react-icons/fa";
 import {Button} from "react-bootstrap";
 
-import React, {Fragment, useState} from "react";
+import React from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ReactPlayer from 'react-player'
 import 'react-chat-widget/lib/styles.css';
-import { Widget, addResponseMessage } from 'react-chat-widget';
 import {
     CardDeck,
     Card,
     Navbar,
-    Form,
-    Nav,
-    NavDropdown,
-    FormControl,
     Container,
     Col,
     Row,
 } from "react-bootstrap"
-import {Md3DRotation} from "react-icons/all";
 
 
 const options = {
@@ -112,14 +106,11 @@ class Dictaphone extends React.Component {
                 <div className="wrapper">
                     <Button className="MicButton" onClick={handleStartListen} style={{
                         borderRadius: '45%',
-                        border: '5px solid white',
-                        backgroundColor: 'black'
+                        border: '4px solid red',
+                        backgroundColor: 'red'
                     }}>
-                        <BsMicMute className="Mic" size="50px" style={{ margin : '0 5px'}}/>
+                    <FaMicrophoneSlash className="Mic" size="50px" style={{margin: '0 5px'}}/>
                     </Button>
-                    <div id="output" className="output">
-                        {transcript}
-                    </div>
                 </div>
             )
         } else {
@@ -127,14 +118,11 @@ class Dictaphone extends React.Component {
                 <div className="wrapper">
                     <Button className="MicButton" onClick={handleStopListen} style={{
                         borderRadius: '45%',
-                        border: '5px solid white',
-                        backgroundColor: 'black'
+                        border: '4px solid green',
+                        backgroundColor: 'green'
                     }}>
-                        <BsMic className="Mic" size="50px" style={{ margin : '0 5px'}}/>
-                    </Button>   
-                    <div id="output" className="output">
-                        {transcript}
-                    </div>
+                        <FaMicrophone className="Mic" size="50px" style={{ margin : '0 5px'}}/>
+                    </Button>
                 </div>
             )
         }
@@ -246,7 +234,6 @@ class ItemList extends React.Component {
                         8
                     )}
                 </CardDeck>
-                <br/>
             </div>
         );
     }
@@ -313,12 +300,8 @@ function getMoreInfo(itemName) {
 
 function changeCurrentPlayer(video_src, looped) {
     let currentPlayer = this.state.currentPlayer
-    currentPlayer = <ReactPlayer height='100%' width='100%' url={video_src} playing loop={looped} />
+    currentPlayer = <ReactPlayer className="VideoPlayer" height='80%' width='100%'  url={video_src} playing loop={looped} />
     this.setState({currentPlayer})
-}
-
-function handleNewUserMessage() {
-
 }
 
 function makeOrder() {
@@ -335,12 +318,6 @@ function makeOrder() {
 }
 
 
-class CanvasVideo extends React.Component {
-    constructor() {
-        super();
-    }
-}
-
 class App extends React.Component {
     constructor(...args) {
         super(...args);
@@ -348,7 +325,7 @@ class App extends React.Component {
             'messages': [],
             'order': [],
             'messagesCount': 0,
-            'currentPlayer': <ReactPlayer height='100%' width='100%' url="/demo.mp4" playing loop/>
+            'currentPlayer': <ReactPlayer className="VideoPlayer" height='80%' width='100%'  url='/demo.mp4' playing loop />
         }
     }
     
@@ -395,10 +372,10 @@ class App extends React.Component {
                         <Col className="Chat">
                             <MessageBox messages={this.state.messages}/>
                         </Col>
-                        <Col className="ItemList" style={{height: '92.5vh'}}> <ItemList/> </Col>
-                        <Col className="VirtualAssistant" style={{height: '92.5vh'}}>
+                        <Col className="ItemList"> <ItemList/> </Col>
+                        <Col className="VirtualAssistant">
                             {this.state.currentPlayer}
-                            <Dict/>
+                            <Dict classname="Dictaphone" />
                         </Col>
                     </Row>
                 </Container>

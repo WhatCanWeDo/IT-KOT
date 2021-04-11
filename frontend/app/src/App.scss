@@ -21,24 +21,31 @@
 }
 
 .item-list {
+  height: 100%;
+  position: relative;
   padding-top: 10%;
   align-items: center;
   align-content: center;
   align-self: center;
   padding-left: 13%;
-  background-color: red;
+  background-color: whitesmoke;
   border-radius: 5%;
 }
 
 .Deck {
-  height: 27vh;
+  height: 30%;
   width: 90%;
-  background-color: antiquewhite;
 }
 
 .Card {
   height: 80%;
 }
+
+.wrapper {
+  align-content: center;
+  text-align: center;
+}
+
 
 .CardTitle {
   color: black;
@@ -63,17 +70,10 @@
   color: white;
 }
 
-
-.MessageBox li {list-style-type: none}
-.MessageBox {
-  background-color: wheat;
-  height: 100%;
-}
-
 .chat {
     width: 100%;
     max-width: 800px;
-    height: calc(100vh - 50px);
+    height: 91.6vh;
     min-height: 100%;
     padding: 15px 30px;
     margin: 0 auto;
@@ -118,7 +118,7 @@
      background-position: center;
      background-size: contain;
      position: absolute;
-     bottom: -2px;
+     bottom: 20px;
      left: -5px;
     }
     &-own {
@@ -147,27 +147,16 @@
   font-size: 200%;
   font-family: Ubuntu;
 }
-.Nav1 {
-  color: red;
-}
-
-.Nav2 {
-  color: green;
-}
-
-.Nav3 {
-  color: white;
-}
 
 
 .ItemList {
-  background-color: aqua;
+  height: 91.6vh;
 }
 
 
 .VirtualAssistant {
   background-color: mediumaquamarine;
-  height: 20vh;
+  height: 91.6vh;
 }
 
 .App-link {
