@@ -66,7 +66,7 @@ class Dictaphone extends React.Component {
                 sendToChat('Советую вам заказать гранатовый сок. Мы выжимаем его   из гранатов выращенных на местных фермах прямо у нас на кухне.', false)
                 setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 9000)
             }
-            else if (text.includes('добав') || text.includes('можно') || text.includes('закаж') || text.includes('давай')){  // добавить товары в корзину
+            else if (text.includes('добав') || text.includes('можно') || text.includes('закаж') || text.includes('давай') || text.includes('хоч')){  // добавить товары в корзину
                 var ordered = text2items(text);
                 if (ordered.length == 0){
                     changeCurrentPlayer('/didnt_get_it.mp4', false)
