@@ -5,9 +5,15 @@ h11==0.12.0
 httpcore==0.12.3
 httpx==0.17.1
 idna==3.1
+numpy==1.20.2
+pandas==1.2.3
 pydantic==1.8.1
+python-dateutil==2.8.1
+pytz==2021.1
 rfc3986==1.4.0
+six==1.15.0
 sniffio==1.2.0
 starlette==0.13.6
+tabulate==0.8.9
 typing-extensions==3.7.4.3
 uvicorn==0.13.4

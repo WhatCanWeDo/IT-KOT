@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Request
-import httpx
 from fastapi.responses import JSONResponse
-import logging
 from pprint import pprint
-from ..speech2order import speech2order
+import pandas as pd
+from tabulate import tabulate
+
 
 router = APIRouter()
-prices = [250, 170, 195, 205, 120, 450, 370, 240, 200, 450, 200]
 names = ['Салат Цезарь', 'Греческий салат', 'Салат из морепродуктов', 'Хинкал (индейка', 'Хинкал (баранина)', 'Хинкал (говядина)', 'Красное вино (Испания)', 'Белове вино (Франция)', 'Гранатовый сок']
+
 
 @router.post('/make-order')
 async def make_order(r: Request):
@@ -15,11 +15,15 @@ async def make_order(r: Request):
     item_ids = request['items']
     p = 0
     ind = 0
+    items = {}
     for i in item_ids:
-        ind += 1
-        print(f'{ind}) Блюдо: {names[i]}     Цена: {prices[i]} р.')
-        p += prices[i]
-    print('Цена заказа', p, 'рублей')
+        if names[i] in items.keys():
+            items[names[i]] += 1
+        else:
+            items[names[i]] = 1
+
+    df = pd.DataFrame(items.items(), columns=['Блюдо', 'Количество'], index=None)
+    print(tabulate(df, headers='keys', tablefmt='fancy_grid'))
     return JSONResponse(status_code=200, content={})
 
 
