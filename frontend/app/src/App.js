@@ -73,7 +73,7 @@ class Dictaphone extends React.Component {
                 sendToChat('Советую вам заказать гранатовый сок. Мы выжимаем его   из гранатов выращенных на местных фермах прямо у нас на кухне.', false)
                 setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 9000)
             }
-            else if ((text.includes('подсказ') || text.includes('совет')) && text.includes('ед')){
+            else if ((text.includes('подсказ') || text.includes('совет')) && (text.includes('ед') || text.includes('поесть'))){
                 changeCurrentPlayer('/suggest_caesar.mp4', false)
                 sendToChat('Советую вам попробовать салат Цезарь, это фирменное блюдо нашего шефа.', false)
                 setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 6000)
@@ -121,11 +121,11 @@ class Dictaphone extends React.Component {
             return (
                 <div className="wrapper">
                     <Button className="MicButton" onClick={handleStartListen} style={{
-                        borderRadius: '45%',
-                        border: '4px solid red',
-                        backgroundColor: 'red'
+                        borderRadius: '50%',
+                        backgroundColor: 'white',
+                        border:'4px solid white'
                     }}>
-                    <FaMicrophoneSlash className="Mic" size="50px" style={{margin: '0 5px'}}/>
+                        <img src="mic_off.png"></img>
                     </Button>
                 </div>
             )
@@ -134,11 +134,11 @@ class Dictaphone extends React.Component {
                 <div className="wrapper">
                     {console.log(transcript)}
                     <Button className="MicButton" onClick={handleStopListen} style={{
-                        borderRadius: '45%',
-                        border: '4px solid green',
-                        backgroundColor: 'green'
+                        borderRadius: '50%',
+                        backgroundColor: 'white',
+                        border:'4px solid white'
                     }}>
-                        <FaMicrophone className="Mic" size="50px" style={{ margin : '0 5px'}}/>
+                    <img src="mic_on.png"></img>
                     </Button>
                 </div>
             )
