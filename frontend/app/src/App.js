@@ -52,8 +52,8 @@ class Dictaphone extends React.Component {
             let text = transcript.toLowerCase();
             // готовы
             if (text.includes('добав') || text.includes('можно') || text.includes('закаж') || text.includes('давай')){  // добавить товары в корзину
-                var ordered = text2items(text);
-                if (ordered.length == 0){
+                let ordered = text2items(text);
+                if (ordered.length === 0){
                     changeCurrentPlayer('/didnt_get_it.mp4', false)
                     setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 5000)
                 } else{
@@ -307,6 +307,7 @@ export function sendToChat(msgText, fromUser) {
 
 function addItem(msgText, fromUser, id) {
     let order = this.state.order
+    console.log(order)
     sendToChat(msgText, fromUser)
     order.push(id)
     this.setState({order})

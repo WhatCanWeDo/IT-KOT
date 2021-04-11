@@ -11,7 +11,6 @@ prices = [250, 170, 195, 205, 120, 450, 370, 240, 200, 450, 200]
 
 @router.post('/make-order')
 async def make_order(r: Request):
-    pprint(await r.json())
     request = await r.json()
     item_ids = request['items']
     p = 0
