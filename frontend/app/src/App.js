@@ -353,6 +353,7 @@ class App extends React.Component {
         getMoreInfo = getMoreInfo.bind(this)
         changeCurrentPlayer = changeCurrentPlayer.bind(this)
         setTimeout(function(){changeCurrentPlayer('/welcome.mp4')}, 500)
+        sendToChat("Добрый день! Рады видеть вас в нашем ресторане. Во вкладке по центру вы можете ознакомиться с меню. Если вам нужна помощь или вы готовы сделать заказ, можете обратиться ко мне.", false)
         setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 13000)
     }
 
