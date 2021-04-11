@@ -17,7 +17,7 @@ async def make_order(r: Request):
     ind = 0
     for i in item_ids:
         ind += 1
-        print(f'{ind}) Блюдо: {names[i]}     Цена: {prices[i]}')
+        print(f'{ind}) Блюдо: {names[i]}     Цена: {prices[i]} р.')
         p += prices[i]
     print('Цена заказа', p, 'рублей')
     return JSONResponse(status_code=200, content={})
