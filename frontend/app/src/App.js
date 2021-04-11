@@ -51,8 +51,11 @@ class Dictaphone extends React.Component {
         const handleUserIntention = () => {
             let text = transcript.toLowerCase();
             // готовы
-
-            if ((text.includes('подсказ') || text.includes('совет')) && (text.includes('ед') || text.includes('поесть'))){
+            if (text.includes('счёт') || text.includes('счет')){
+                changeCurrentPlayer('/payment.mp4', false)
+                sendToChat('С вас 570 рублей, можете приложить карту для оплаты. Также, будем рады, если вы оставите свой отзыв о нас.', false)
+                setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 10000)
+            } else if ((text.includes('подсказ') || text.includes('совет')) && (text.includes('ед') || text.includes('поесть'))){
                 changeCurrentPlayer('/suggest_caesar.mp4', false)
                 sendToChat('Советую вам попробовать салат Цезарь, это фирменное блюдо нашего шефа.', false)
                 setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 6000)
@@ -66,8 +69,7 @@ class Dictaphone extends React.Component {
                 changeCurrentPlayer('/what_to_drink.mp4', false)
                 sendToChat('Советую вам заказать гранатовый сок. Мы выжимаем его   из гранатов выращенных на местных фермах прямо у нас на кухне.', false)
                 setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 9000)
-            }
-            else if (text.includes('добав') || text.includes('можно') || text.includes('закаж') || text.includes('давай') || text.includes('хоч')){  // добавить товары в корзину
+            } else if (text.includes('добав') || text.includes('можно') || text.includes('закаж') || text.includes('давай') || text.includes('хоч')){  // добавить товары в корзину
                 var ordered = text2items(text);
                 if (ordered.length === 0){
                      changeCurrentPlayer('/didnt_get_it.mp4', false)
@@ -79,10 +81,6 @@ class Dictaphone extends React.Component {
                         (item, index, arr) => {addItem("Добавили к заказу " + item[0], false, item[1])}
                     )
                 }
-            } else if (text.includes('счёт') || text.includes('счет')){
-                changeCurrentPlayer('/payment.mp4', false)
-                sendToChat('С вас 570 рублей, можете приложить карту для оплаты. Также, будем рады, если вы оставите свой отзыв о нас.', false)
-                setTimeout(function(){changeCurrentPlayer('/demo.mp4', true)}, 10000)
             } else {
                 changeCurrentPlayer('/didnt_get_it.mp4', false)
                 sendToChat('Извините, я не совсем вас поняла', false)
