@@ -2,8 +2,8 @@ import React, {useState} from 'react'
 import SpeechRecognition from "react-speech-recognition";
 import {BsMic, BsMicMute} from "react-icons/bs";
 import {Button} from "react-bootstrap";
-import "./App.css"
-
+import "./App.scss"
+import {sendToChat} from "./App";
 const options = {
     autoStart: false,
     continuous: true
@@ -17,24 +17,31 @@ class Dictaphone extends React.Component {
         const {
             listening,
             transcript,
-            interimTranscript,
-            finalTranscript,
+            resetTranscript,
             browserSupportsSpeechRecognition
         } = this.props;
 
         const handleStartListen = event => {
+            console.log('started')
             if (listening) {
                 this.props.abortListening();
             }
             this.props.recognition.lang = 'ru'
             this.props.startListening();
-            console.log(this.props)
             this.setState({ muted: false })
             event.target.classList.toggle("record");
         };
 
+
         const handleStopListen = event => {
-            this.props.stopListening();
+            console.log('stopped')
+            if (transcript !== '') {
+                sendToChat(transcript, true)
+            }
+            this.props.abortListening();
+            console.log(transcript)
+            resetTranscript();
+            console.log(transcript)
             this.setState({muted: true})
         }
 
@@ -55,10 +62,8 @@ class Dictaphone extends React.Component {
                         backgroundColor: 'black'
                     }}>
                         <BsMicMute className="Mic" size="50px" style={{ margin : '0 5px'}}/>
+                        {console.log(transcript)}
                     </Button>
-                    <div id="output" className="output">
-                        {transcript}
-                    </div>
                 </div>
             )
         } else {
@@ -70,10 +75,8 @@ class Dictaphone extends React.Component {
                         backgroundColor: 'black'
                     }}>
                         <BsMic className="Mic" size="50px" style={{ margin : '0 5px'}}/>
+                        {console.log(transcript)}
                     </Button>
-                    <div id="output" className="output">
-                        {transcript}
-                    </div>
                 </div>
             )
         }

@@ -1,7 +1,9 @@
-import './App.css';
+import './App.scss';
 import React, {Fragment} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ReactPlayer from 'react-player'
+import 'react-chat-widget/lib/styles.css';
+import { Widget, addResponseMessage } from 'react-chat-widget';
 import {
     CardDeck,
     Card,
@@ -14,14 +16,12 @@ import {
     Container,
     Col,
     Row,
-    ListGroup,
-    Alert
 } from "react-bootstrap"
 import Dictaphone from "./Dictaphone";
 
 function createItemCard(imageSrc, title, msgText, itemName, itemId) {
     return (
-        <Card className="Card" shadow={true}>
+        <Card className="Card">
             <Card.Img variant="top" src={imageSrc}
                       width="100" height="100" alt={itemName}/>
             <Card.Title className="CardTitle" as="a" onClick={() => getMoreInfo(itemName)}> {title} </Card.Title>
@@ -37,7 +37,7 @@ function createItemCard(imageSrc, title, msgText, itemName, itemId) {
                     fontFamily: 'sans-serif',
                     border: "green"
                 }
-            } onClick={() => addItem(msgText, true, itemId)}>
+            } onClick={() => addItem(msgText, false, itemId)}>
                 Добавить
             </Button>
         </Card>
@@ -138,13 +138,39 @@ class VirtualAssistant extends React.Component {
     }
 }
 
+class MessageBox extends React.Component {
+    render() {
+        return (
+            <div className="chat">
+                <div className="chat__wrapper">
+                    {this.props.messages.map(message =>
+                        message.fromUser ?
+                        <div className="chat__message chat__message-own" key={message.id}>
+                            <div>
+                                {message.text}
+                            </div>
+                        </div>
+                        :
+                        <div className="chat__message" key={message.id}>
+                            <div>
+                                {message.text}
+                            </div>
+                        </div>
+                )}
+                </div>
+            </div>
+        )
+    }
+}
 
-function sendToChat(msgText, fromUser) {
+
+export function sendToChat(msgText, fromUser) {
     let messages = this.state.messages
     messages.push(
         {
-            'msgText': msgText,
-            'fromUser': fromUser
+            'text': msgText,
+            'fromUser': fromUser,
+            'id': this.state.messagesCount++
         }
     )
     this.setState({messages})
@@ -168,6 +194,10 @@ function changeCurrentPlayer(video_src, looped) {
     this.setState({currentPlayer})
 }
 
+function handleNewUserMessage() {
+
+}
+
 function makeOrder() {
     let data = {'items': this.state.order}
     const requestOptions = {
@@ -188,6 +218,7 @@ class App extends React.Component {
         this.state = {
             'messages': [],
             'order': [],
+            'messagesCount': 0,
             'currentPlayer': <ReactPlayer height='100%' width='100%' url="/demo.mp4" playing={true}/>
         }
     }
@@ -203,7 +234,7 @@ class App extends React.Component {
     render() {
         return (
             <div className="App" style={{width: '100%'}}>
-                <Navbar bg="info" expand="lg" style={{width: '100%'}}>
+                <Navbar bg="white" expand="lg" style={{width: '100%'}}>
                     <Navbar.Brand style={{
                         width: "10%",
                         height: "10%"
@@ -215,34 +246,28 @@ class App extends React.Component {
                             className="d-inline-block align-top"
                         />
                     </Navbar.Brand>
-                    <Navbar.Collapse className="">
-                        <Navbar.Text className="text-left">Чат</Navbar.Text>
-                    </Navbar.Collapse>
-                    <Navbar.Collapse>
-                    <Navbar.Text className="text-center">Меню</Navbar.Text>
-                    </Navbar.Collapse>
-                    <Navbar.Text className="text-right">Ассистент</Navbar.Text>
+                        <span className="HeadSpan"
+                              style={
+                                  {
+                                    marginLeft: '2%',
+                                  }
+                              }>Чат</span>
+                        <span className="HeadSpan" style={{
+                            marginLeft: '31.5%',
+                        }} >Меню</span>
+                    <span className="HeadSpan" style={{
+                        marginLeft: '29%'
+                    }}>Ассистент</span>
                 </Navbar>
                 <Container fluid="true" style={{width: '99.2%'}}>
                     <Row>
-                        <Col className="Chat" style={{
-                            height: '92.5vh',
-                        }}>
-                            <div className="Messenger" style={{
-                                backgroundColor: 'white',
-                            }}>
-                                {this.state.messages.map((message, i) =>
-                                message.fromUser ?
-                                    <span className="userMessage" key={i}> {message.msgText} <br/> </span>:
-                                    <span className="botMessage" key={i}> {message.msgText} <br/> </span>
-                                )}
-                            </div>
-                            <Button onClick={makeOrder}>Сделать заказ</Button>
+                        <Col className="Chat">
+                            <MessageBox messages={this.state.messages}/>
                         </Col>
                         <Col className="ItemList" style={{height: '92.5vh'}}> <ItemList/> </Col>
                         <Col className="VirtualAssistant" style={{height: '92.5vh'}}>
-                            <Dictaphone/>
-                        </Col>
+
+]                        </Col>
                     </Row>
                 </Container>
             </div>
